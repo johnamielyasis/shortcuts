@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+// import styles here
 
 export const ShortcutView = ({
   name,
@@ -7,13 +8,14 @@ export const ShortcutView = ({
   image,
   keystroke,
 }) => {
+
+  const [hint, setHint] = useState(false);
+
   return (
     <div>
-      <div>
         <h3>Shortcut: {name}</h3>
-        <img src={image} alt={description} />
         <p>{description}</p>
-      </div>
+        <img src={image} alt={description} />
     </div>
   )
 }

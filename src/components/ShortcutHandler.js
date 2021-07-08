@@ -79,11 +79,14 @@ const shortcuts = [
 export default function VSCode(props) {
   const [current, setCurrent] = useState(0);
   const [done, setDone] = useState(false);
-
+  const [hint, setHint] = useState(false);
   const currentShortcut = shortcuts[current];
 
   const handleSuccess = (e) => {
     if (current + 1 < shortcuts.length) {
+      if (hint) {
+        setHint(false)
+      }
       setCurrent(current + 1);
     } else {
       setDone(true);
@@ -109,9 +112,14 @@ export default function VSCode(props) {
     }
   }, [current])
 
-  return done ? <h1>Congrats!</h1> : <HotKeys keyMap={keyMap} handlers={handlers} allowChanges={true}>
+    return done ? <div><h1>Congrats!</h1><button onClick={() => {
+      setDone(false);
+      setCurrent(0);
+    }}>StartOver</button></div>
+  : <HotKeys keyMap={keyMap} handlers={handlers} allowChanges={true}>
     <FocusTrap ref={ref} tabIndex={0}>
       <ShortcutView {...currentShortcut} />
     </FocusTrap>
+    <span><button onClick={() => setHint(true)}>HINT</button> {hint ? currentShortcut.keystroke : null}  </span>
   </HotKeys>
 }
