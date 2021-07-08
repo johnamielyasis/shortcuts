@@ -1,17 +1,31 @@
-# Getting Started with VSCode Shortcuts
+# VSCode Shortcuts
+VSCode Shortcuts is a quick flashcard app for learning about VSCode shortcuts.
 
 ## Available Scripts
 
-In the project directory, you can run:
+Use package manager to install VSCode shortcuts
 
 ### `npm install`
+
+Command to run app in development mode
+
 ### `npm start`
 
-Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Usage
+Input the proper commands that correspond to the gif action to move onto the next flashcard
+
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
+
+## License
+MIT
+
+<!-- The page will reload if you make edits.\
+You will also see any lint errors in the console. -->
 
 <!-- ### `npm test`
 
