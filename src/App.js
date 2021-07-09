@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSetRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
 import styled, { createGlobalStyle } from 'styled-components';
 import {firebaseApp, uiConfig, firebaseAuth, db } from './utils/firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
@@ -40,7 +40,7 @@ const Container = styled.div`
 const App = () => {
   const [user, setUser] = useState(null);
   const [checkedAuth, setCheckedAuth] = useState(false);
-  const setUserId = useSetRecoilState(userIdAtom);
+  const [uid, setUserId] = useRecoilState(userIdAtom);
   const setShortcuts = useSetRecoilState(shortcutsAtom);
   const category = useRecoilValue(categoryAtom);
 
@@ -55,10 +55,6 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    const userDataRef = db.ref("user_data");
-    userDataRef.on("value", (snapshot) => {
-      console.log('________________', snapshot.val());
-    });
     const shortcutsRef = db.ref("shortcuts");
     shortcutsRef.on("value", (snapshot) => {
       // data returns as an object

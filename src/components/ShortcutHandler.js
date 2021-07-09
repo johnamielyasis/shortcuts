@@ -46,13 +46,12 @@ export default function ShortcutHandler(props) {
   const uid = useRecoilValue(userIdAtom);
   const filteredShortcuts = shortcuts.filter(s => s.category === category);
   const currentShortcut = filteredShortcuts[current];
-  console.log(currentShortcut, done);
 
   const handleSuccess = (e) => {
     // progress recording to db
-    const itemRef = db.ref().child("user_data").child(uid).push({
+    const itemRef = db.ref("user_data").child(uid).child('shortcut_progress').push({
       shortcut_id: currentShortcut.id,
-      progress: 1,
+      value: 1,
     });
     // training advancement
     if (current + 1 < filteredShortcuts.length) {
@@ -91,6 +90,14 @@ export default function ShortcutHandler(props) {
   const onHint = () => {
     setHint(true);
   }
+
+  useEffect(() => {
+    if (!uid) return;
+    const userDataRef = db.ref("user_data").child(uid).child('shortcut_progress');
+    userDataRef.on("value", (snapshot) => {
+      console.log(snapshot.val())
+    });
+  }, [uid]);
 
   useEffect(() => {
     focusOnTrap()

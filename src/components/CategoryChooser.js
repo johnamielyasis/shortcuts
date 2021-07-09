@@ -24,7 +24,7 @@ export default function CategoryChooser(props) {
   }, [])
 
   const onChooseCategory = (category) => {
-  setCategory(category);
+    setCategory(category);
   };
 
   return (
