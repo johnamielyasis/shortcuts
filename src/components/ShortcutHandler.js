@@ -46,24 +46,6 @@ export default function ShortcutHandler(props) {
   const uid = useRecoilValue(userIdAtom);
   const filteredShortcuts = shortcuts.filter(s => s.category === category);
   const currentShortcut = filteredShortcuts[current];
-<<<<<<< HEAD
-  const shortcutProgressRef = db.ref("user_data").child(uid).child('shortcut_progress');
-  const existingShortcutProgress = progress.find(p => p.shortcut_id === currentShortcut.id);
-  const shortcutProgress = existingShortcutProgress?.value || 0;
-  const totalProgress = progress.reduce((a, c) => a + c.value, 0)
-  // existingShortcutProgress.id
-  // existingShortcutProgress.shortcut_id
-
-  const handleHint = () => {
-    setHint(true);
-    if (!!existingShortcutProgress) {
-      shortcutProgressRef.child(existingShortcutProgress.id).update({
-        value: Math.max(existingShortcutProgress.value - 2, 0),
-      })
-    }
-  };
-=======
->>>>>>> parent of 6659166 (added score, now properly updating progress in db, style header, some refactor)
 
   const handleSuccess = (e) => {
     // progress recording to db

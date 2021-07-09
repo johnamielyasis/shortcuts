@@ -45,10 +45,10 @@ const App = () => {
   const category = useRecoilValue(categoryAtom);
 
   useEffect(() => {
-    //firbase passes user/null in callback based on auth state
+    //firebase passes user/null in callback based on auth state
     const unregister = firebaseApp.auth().onAuthStateChanged((user) => {
       setUser(user);
-      setUserId(user.uid); // store id for db use.
+      setUserId(user?.uid); // store id for db use.
       setCheckedAuth(true);
     });
     return unregister;
