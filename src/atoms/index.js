@@ -9,3 +9,8 @@ export const shortcutsAtom = atom({
   key: 'shortcutsAtom',
   default: [],
 });
+
+export const categoryAtom = atom({
+  key: 'categoryAtom',
+  default: ''
+})

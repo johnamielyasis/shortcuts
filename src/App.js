@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSetRecoilState } from 'recoil';
+import { useSetRecoilState, useRecoilValue } from 'recoil';
 import styled, { createGlobalStyle } from 'styled-components';
 import {firebaseApp, uiConfig, firebaseAuth, db } from './utils/firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
@@ -15,7 +15,7 @@ import Header from './components/Header';
 import ShortcutHandler from './components/ShortcutHandler';
 import CategoryChooser from './components/CategoryChooser';
 import ShortcutAdder from './components/ShortcutAdder';
-import { shortcutsAtom } from './atoms';
+import { userIdAtom, shortcutsAtom, categoryAtom } from './atoms';
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -40,23 +40,38 @@ const Container = styled.div`
 const App = () => {
   const [user, setUser] = useState(null);
   const [checkedAuth, setCheckedAuth] = useState(false);
+  const setUserId = useSetRecoilState(userIdAtom);
   const setShortcuts = useSetRecoilState(shortcutsAtom);
+  const category = useRecoilValue(categoryAtom);
 
   useEffect(() => {
+    //firbase passes user/null in callback based on auth state
     const unregister = firebaseApp.auth().onAuthStateChanged((user) => {
       setUser(user);
+      setUserId(user.uid); // store id for db use.
       setCheckedAuth(true);
-    })
+    });
     return unregister;
   }, []);
 
   useEffect(() => {
-    const shortcutRef = db.ref("shortcuts");
-    shortcutRef.on("value", (snapshot) => {
+    const userDataRef = db.ref("user_data");
+    userDataRef.on("value", (snapshot) => {
+      console.log('________________', snapshot.val());
+    });
+    const shortcutsRef = db.ref("shortcuts");
+    shortcutsRef.on("value", (snapshot) => {
       // data returns as an object
       const items = snapshot.val();
-      // convert object to array
-      setShortcuts(Object.values(items));
+      // convert object to array of shortcuts with ids in key
+      const itemList = Object.entries(items)
+        .map(([key, value]) => {
+          return {
+            id: key,
+            ...value,
+          }
+        });
+      setShortcuts(itemList);
     });
   }, [setShortcuts]);
 
@@ -76,9 +91,10 @@ const App = () => {
           (
             <Router>
               <Switch>
-                <Route to="/"><ShortcutHandler /></Route>
-                <Route to="/onboarding"><CategoryChooser /></Route>
-                <Route to="/new-shortcut"><ShortcutAdder /></Route>
+                <Route exact path="/">
+                  {category ? <ShortcutHandler /> : <CategoryChooser />}
+                </Route>
+                <Route path="/new-shortcut"><ShortcutAdder /></Route>
               </Switch>
 
               <button onClick={onSignOut}>Sign Out</button>

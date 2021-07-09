@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { HotKeys } from 'react-hotkeys';
 import { ShortcutView } from './ShortcutView';
 import { db } from '../utils/firebase';
-import { shortcutsAtom } from '../atoms';
+import { userIdAtom, shortcutsAtom, categoryAtom } from '../atoms';
 
 // places focus on relevant part where key perss listener is
 const FocusTrap = styled.div`
@@ -41,20 +41,27 @@ export default function ShortcutHandler(props) {
   const [current, setCurrent] = useState(0);
   const [done, setDone] = useState(false);
   const [hint, setHint] = useState(false);
+  const category = useRecoilValue(categoryAtom);
   const shortcuts = useRecoilValue(shortcutsAtom);
-
-  const currentShortcut = shortcuts[current];
+  const uid = useRecoilValue(userIdAtom);
+  const filteredShortcuts = shortcuts.filter(s => s.category === category);
+  const currentShortcut = filteredShortcuts[current];
+  console.log(currentShortcut, done);
 
   const handleSuccess = (e) => {
-    e?.preventDefault && e.preventDefault();
-    if (current + 1 < shortcuts.length) {
-      if (hint) {
-        setHint(false);
-      }
+    // progress recording to db
+    const itemRef = db.ref().child("user_data").child(uid).push({
+      shortcut_id: currentShortcut.id,
+      progress: 1,
+    });
+    // training advancement
+    if (current + 1 < filteredShortcuts.length) {
       setCurrent(current + 1);
+      setHint(false);
     } else {
       setDone(true);
     }
+    e?.preventDefault();
   };
 
   const handlers = {
@@ -103,3 +110,20 @@ export default function ShortcutHandler(props) {
     </HotKeys>
   )
 }
+
+/*
+{
+  "rules": {
+    "shortcuts": {
+      ".read": true,
+      ".write": "auth.uid != null",
+    },
+    "user_data": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+      }
+    }
+  }
+}
+*/
