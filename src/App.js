@@ -31,10 +31,10 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const Container = styled.div``;
-const Inner = styled.div`
+const Container = styled.div`
   max-width: 1080px;
   margin: 0 auto;
+  padding: 16px;
 `;
 // method for tracking if authentication status has changed
 const App = () => {
@@ -71,11 +71,15 @@ const App = () => {
     });
   }, [setShortcuts]);
 
+  // to do: let users log out
+  const onSignOut = () => {
+    firebaseApp.auth().signOut();
+  };
+
   return (
     <Container>
       <GlobalStyle />
       <Header />
-      <Inner>
       {
         checkedAuth && (
           !user ?
@@ -88,11 +92,12 @@ const App = () => {
                 </Route>
                 <Route path="/new-shortcut"><ShortcutAdder /></Route>
               </Switch>
+
+              <button onClick={onSignOut}>Sign Out</button>
             </Router>
           )
         )
       }
-      </Inner>
     </Container>
   );
 };
