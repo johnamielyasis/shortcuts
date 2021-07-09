@@ -8,7 +8,7 @@ import styled from 'styled-components';
   useSetRecoilState = (atom) => setterFn          // only returns setterFn ONLY
 */
 const CategoryButton = styled.button`
-  padding: 1px;
+  padding: 16px;
   margin-right: 16px;
 `;
 

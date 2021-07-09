@@ -49,7 +49,7 @@ export default function ShortcutHandler(props) {
   const currentShortcut = filteredShortcuts[current];
   const shortcutProgressRef = db.ref("user_data").child(uid).child('shortcut_progress');
   const existingShortcutProgress = progress.find(p => p.shortcut_id === currentShortcut.id);
-  const shortcutProgress = existingShortcutProgress?.value|| 0;
+  const shortcutProgress = existingShortcutProgress?.value || 0;
   const totalProgress = progress.reduce((a, c) => a + c.value, 0)
   // existingShortcutProgress.id
   // existingShortcutProgress.shortcut_id
