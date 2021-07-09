@@ -41,25 +41,49 @@ export default function ShortcutHandler(props) {
   const [current, setCurrent] = useState(0);
   const [done, setDone] = useState(false);
   const [hint, setHint] = useState(false);
+  const [progress, setProgress] = useState([]);
   const category = useRecoilValue(categoryAtom);
   const shortcuts = useRecoilValue(shortcutsAtom);
   const uid = useRecoilValue(userIdAtom);
   const filteredShortcuts = shortcuts.filter(s => s.category === category);
   const currentShortcut = filteredShortcuts[current];
+  const shortcutProgressRef = db.ref("user_data").child(uid).child('shortcut_progress');
+  const existingShortcutProgress = progress.find(p => p.shortcut_id === currentShortcut.id);
+  const shortcutProgress = existingShortcutProgress?.value|| 0;
+  const totalProgress = progress.reduce((a, c) => a + c.value, 0)
+  // existingShortcutProgress.id
+  // existingShortcutProgress.shortcut_id
+
+  const handleHint = () => {
+    setHint(true);
+    if (!!existingShortcutProgress) {
+      shortcutProgressRef.child(existingShortcutProgress.id).update({
+        value: Math.max(existingShortcutProgress.value - 2, 0),
+      })
+    }
+  };
 
   const handleSuccess = (e) => {
     // progress recording to db
-    const itemRef = db.ref("user_data").child(uid).child('shortcut_progress').push({
-      shortcut_id: currentShortcut.id,
-      value: 1,
-    });
+    if (!!existingShortcutProgress) {
+      shortcutProgressRef.child(existingShortcutProgress.id).update({
+        value: existingShortcutProgress.value + 1,
+      })
+    } else {
+      shortcutProgressRef.push({
+        shortcut_id: currentShortcut.id,
+        value: 1,
+      });
+    }
+
     // training advancement
     if (current + 1 < filteredShortcuts.length) {
       setCurrent(current + 1);
-      setHint(false);
     } else {
       setDone(true);
     }
+
+    setHint(false);
     e?.preventDefault();
   };
 
@@ -68,10 +92,10 @@ export default function ShortcutHandler(props) {
   };
 
   const keyMap = {
-    // optional chaining
+    SUCCESS: currentShortcut?.keystroke
+    // optional?.chaining
     // returns undefined if currentShortcut
     // without throwing error: "cannot find keystroke of undefined"
-    SUCCESS: currentShortcut?.keystroke
   };
 
   const ref = useRef(null);
@@ -87,17 +111,21 @@ export default function ShortcutHandler(props) {
     }
   };
 
-  const onHint = () => {
-    setHint(true);
-  }
-
   useEffect(() => {
     if (!uid) return;
     const userDataRef = db.ref("user_data").child(uid).child('shortcut_progress');
     userDataRef.on("value", (snapshot) => {
-      console.log(snapshot.val())
+      const items = snapshot.val() || {};
+      const itemList = Object.entries(items)
+        .map(([key, value]) => {
+          return {
+            id: key,
+            ...value,
+          }
+        });
+      setProgress(itemList);
     });
-  }, [uid]);
+  }, [uid, current]);
 
   useEffect(() => {
     focusOnTrap()
@@ -113,24 +141,9 @@ export default function ShortcutHandler(props) {
       <FocusTrap ref={ref} tabIndex={0}>
         <ShortcutView {...currentShortcut} />
       </FocusTrap>
-      <Hint><span><button onClick={onHint}>HINT</button> {hint ? currentShortcut.keystroke : null} </span></Hint>
+      <Hint><span><button onClick={handleHint}>HINT</button> {hint ? currentShortcut.keystroke : null} </span></Hint>
+      <h4>Point Contribution: {shortcutProgress}</h4>
+      <h4>Total Points: {totalProgress}</h4>
     </HotKeys>
   )
 }
-
-/*
-{
-  "rules": {
-    "shortcuts": {
-      ".read": true,
-      ".write": "auth.uid != null",
-    },
-    "user_data": {
-      "$uid": {
-        ".read": "$uid === auth.uid",
-        ".write": "$uid === auth.uid",
-      }
-    }
-  }
-}
-*/

@@ -8,7 +8,8 @@ import styled from 'styled-components';
   useSetRecoilState = (atom) => setterFn          // only returns setterFn ONLY
 */
 const CategoryButton = styled.button`
-  padding: 8px;
+  padding: 1px;
+  margin-right: 16px;
 `;
 
 export default function CategoryChooser(props) {
