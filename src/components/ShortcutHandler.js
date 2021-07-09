@@ -1,10 +1,13 @@
+
 import React, { useEffect, useState, useRef } from 'react';
+import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
-import { HotKeys, configure } from 'react-hotkeys';
+import { HotKeys } from 'react-hotkeys';
 import { ShortcutView } from './ShortcutView';
+import { db } from '../utils/firebase';
+import { shortcutsAtom } from '../atoms';
 
-configure({ defaultKeyEvent: 'keyup' });
-
+// places focus on relevant part where key perss listener is
 const FocusTrap = styled.div`
   display: flex;
   justify-content: center;
@@ -13,7 +16,7 @@ const FocusTrap = styled.div`
   position: relative;
   &:not(:focus) {
     &:after {
-      content: 'Click Into the Box to Continue';
+      content: 'Click to Continue';
       font-size: 24px;
       padding: 40px;
       position: absolute;
@@ -31,95 +34,72 @@ const FocusTrap = styled.div`
   }
 `
 
-const shortcuts = [
-  {
-    category: "vs-code",
-    name: "Duplicate Line Down",
-    description: "Make a copy of current line that cursor is on below",
-    image: "https://miro.medium.com/max/526/1*UownOwu3ablWIC3EsvefcA.gif",
-    keystroke: "shift+option+down"
-  },
-  {
-    category: "vs-code",
-    name: "Duplicate Line Up",
-    description: "Make a copy of current line that cursor is on up",
-    image: "https://miro.medium.com/max/526/1*UownOwu3ablWIC3EsvefcA.gif",
-    keystroke: "shift+option+up"
-  },
-  {
-    category: "vs-code",
-    name: "Indent Line",
-    description: "Indents line cursor is on",
-    image: "https://i.stack.imgur.com/2BYAE.gif",
-    keystroke: "command+]"
-  },
-  {
-    category: "vs-code",
-    name: "Outdent Line",
-    description: "Outdents line cursor is on",
-    image: "outdent.gif",
-    keystroke: "command+["
-  },
-  {
-    category: "general",
-    name: "Copy",
-    description: "Copies selection",
-    image: "outdent.gif",
-    keystroke: "command+c"
-  },
-]
+const Hint = styled.div`
+`;
 
-//  /getShortcuts
-//  /getShortcuts?category=general
-//  /getShortcuts?category=vs-code
-//  /getShortcuts?category=vs-code,general
-
-
-
-export default function VSCode(props) {
+export default function ShortcutHandler(props) {
   const [current, setCurrent] = useState(0);
   const [done, setDone] = useState(false);
   const [hint, setHint] = useState(false);
+  const shortcuts = useRecoilValue(shortcutsAtom);
+
   const currentShortcut = shortcuts[current];
 
   const handleSuccess = (e) => {
+    e?.preventDefault && e.preventDefault();
     if (current + 1 < shortcuts.length) {
       if (hint) {
-        setHint(false)
+        setHint(false);
       }
       setCurrent(current + 1);
     } else {
       setDone(true);
     }
-    // e.preventDefault();
   };
 
   const handlers = {
     SUCCESS: handleSuccess
-    // FAIL: () => console.log('wrong'),
   };
 
   const keyMap = {
-    SUCCESS: currentShortcut.keystroke
-    // FAIL: ['cmd', 'option', 'shift'],
+    // optional chaining
+    // returns undefined if currentShortcut
+    // without throwing error: "cannot find keystroke of undefined"
+    SUCCESS: currentShortcut?.keystroke
   };
 
   const ref = useRef(null);
 
-  useEffect(() => {
+  const handleStartOver = () => {
+    setDone(false);
+    setCurrent(0);
+  };
+
+  const focusOnTrap = () => {
     if (ref.current) {
       ref.current.focus();
     }
+  };
+
+  const onHint = () => {
+    setHint(true);
+  }
+
+  useEffect(() => {
+    focusOnTrap()
   }, [current])
 
-    return done ? <div><h1>Congrats!</h1><button onClick={() => {
-      setDone(false);
-      setCurrent(0);
-    }}>StartOver</button></div>
-  : <HotKeys keyMap={keyMap} handlers={handlers} allowChanges={true}>
-    <FocusTrap ref={ref} tabIndex={0}>
-      <ShortcutView {...currentShortcut} />
-    </FocusTrap>
-    <span><button onClick={() => setHint(true)}>HINT</button> {hint ? currentShortcut.keystroke : null}  </span>
-  </HotKeys>
+  return done ? (
+    <div>
+      <h1>Congrats!</h1>
+      <button onClick={handleStartOver}>StartOver</button>
+    </div>
+  ) : (
+    <HotKeys keyMap={keyMap} handlers={handlers} allowChanges={true}>
+      <FocusTrap ref={ref} tabIndex={0}>
+        <ShortcutView {...currentShortcut} />
+      </FocusTrap>
+      <Hint><span><button onClick={onHint}>HINT</button> {hint ? currentShortcut.keystroke : null} </span></Hint>
+    </HotKeys>
+  )
 }
