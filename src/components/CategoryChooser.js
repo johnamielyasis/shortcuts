@@ -10,8 +10,12 @@ import styled from 'styled-components';
 const CategoryButton = styled.button`
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   padding: 16px;
   margin-right: 16px;
+=======
+  padding: 8px;
+>>>>>>> parent of 6659166 (added score, now properly updating progress in db, style header, some refactor)
 =======
   padding: 8px;
 >>>>>>> parent of 6659166 (added score, now properly updating progress in db, style header, some refactor)
