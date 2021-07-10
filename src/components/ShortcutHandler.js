@@ -41,6 +41,7 @@ export default function ShortcutHandler(props) {
   const [current, setCurrent] = useState(0);
   const [done, setDone] = useState(false);
   const [hint, setHint] = useState(false);
+  const [progress, setProgress] = useState(0);
   const category = useRecoilValue(categoryAtom);
   const shortcuts = useRecoilValue(shortcutsAtom);
   const uid = useRecoilValue(userIdAtom);
@@ -48,7 +49,7 @@ export default function ShortcutHandler(props) {
   const currentShortcut = filteredShortcuts[current];
 
   const progressRef = db.ref("user_data").child(uid).child('shortcut_progress');
-  let obj, stuff, progress
+  let obj, stuff
   progressRef.on("value", (snapshot) => {
     obj = snapshot ? snapshot.val() : {};
     stuff = obj ? Object.entries(obj) : [];
@@ -101,6 +102,7 @@ export default function ShortcutHandler(props) {
 
   const handleStartOver = () => {
     setDone(false);
+    setHint(false);
     setCurrent(0);
   };
 
@@ -116,7 +118,7 @@ export default function ShortcutHandler(props) {
         if (id[1].shortcut_id === currentShortcut.id) {
           console.log('their equal', id[1].value, 'id', id[0]);
           let update = {
-            value: Math.max(id[1].value - 2 || 0)
+            value: Math.max(id[1].value - 2, 0)
           }
           db.ref(`user_data/${uid}/shortcut_progress/${id[0]}`).update(update);
           break;
@@ -131,14 +133,23 @@ export default function ShortcutHandler(props) {
     if (!uid) return;
     const userDataRef = db.ref("user_data").child(uid).child('shortcut_progress');
     userDataRef.on("value", (snapshot) => {
-      console.log(snapshot.val())
+      obj = snapshot ? snapshot.val() : {};
+      stuff = obj ? Object.entries(obj) : [];
+      for (let id of stuff) {
+        if (id[1].shortcut_id === currentShortcut.id) {
+          setProgress(id[1].value);
+          console.log('whatsinhere', progress)
+          break;
+        }
+      }
     });
-  }, [uid]);
+  }, [uid, currentShortcut]);
 
   useEffect(() => {
     focusOnTrap()
   }, [current])
   console.log('THIS IS PROGRES IN HANDLER', progress);
+
   return done ? (
     <div>
       <h1>Congrats!</h1>

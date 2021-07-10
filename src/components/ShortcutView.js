@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 const Image = styled.img`
@@ -14,13 +14,14 @@ export const ShortcutView = ({
   progress
 }) => {
   console.log('____PROGRESS IN RIGHT PLACE WTF', progress);
-  let currentProgress = progress ? progress : null;
+
+
   return (
     <div>
       <h3>Shortcut: {name}</h3>
       <p>{description}</p>
       <Image src={image} alt={description} />
-      <p>Learn Level: {currentProgress}</p>
+      <p>Learn Level: {progress}</p>
     </div>
   )
 }
