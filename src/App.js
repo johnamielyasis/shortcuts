@@ -46,6 +46,7 @@ const App = () => {
 
   useEffect(() => {
     //firebase passes user/null in callback based on auth state
+    // todo: understand https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining
     const unregister = firebaseApp.auth().onAuthStateChanged((user) => {
       setUser(user);
       setUserId(user?.uid); // store id for db use.

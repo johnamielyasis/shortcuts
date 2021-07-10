@@ -47,12 +47,35 @@ export default function ShortcutHandler(props) {
   const filteredShortcuts = shortcuts.filter(s => s.category === category);
   const currentShortcut = filteredShortcuts[current];
 
+  const progressRef = db.ref("user_data").child(uid).child('shortcut_progress');
+  let obj, stuff, progress
+  progressRef.on("value", (snapshot) => {
+    obj = snapshot ? snapshot.val() : {};
+    stuff = obj ? Object.entries(obj) : [];
+
+  });
   const handleSuccess = (e) => {
+    console.log('this is stuff', stuff)
     // progress recording to db
-    const itemRef = db.ref("user_data").child(uid).child('shortcut_progress').push({
-      shortcut_id: currentShortcut.id,
-      value: 1,
-    });
+    // in retrospect could just reduce/filter here to stop repeating having to loop but lazy
+    let foundIt = false;
+    for (let id of stuff) {
+      if (id[1].shortcut_id === currentShortcut.id) {
+        foundIt = true;
+        console.log('their equal', id[1].value, 'id', id[0]);
+        let update = {
+          value: id[1].value + 1
+        }
+        db.ref(`user_data/${uid}/shortcut_progress/${id[0]}`).update(update);
+        break;
+      }
+    }
+    if (foundIt === false) {
+      const itemRef = db.ref("user_data").child(uid).child('shortcut_progress').push({
+        shortcut_id: currentShortcut.id,
+        value: 1,
+      });
+    }
     // training advancement
     if (current + 1 < filteredShortcuts.length) {
       setCurrent(current + 1);
@@ -87,8 +110,21 @@ export default function ShortcutHandler(props) {
     }
   };
 
-  const onHint = () => {
+  const handleHint = () => {
+    if (hint === false) {
+      for (let id of stuff) {
+        if (id[1].shortcut_id === currentShortcut.id) {
+          console.log('their equal', id[1].value, 'id', id[0]);
+          let update = {
+            value: Math.max(id[1].value - 2 || 0)
+          }
+          db.ref(`user_data/${uid}/shortcut_progress/${id[0]}`).update(update);
+          break;
+        }
+      }
+    }
     setHint(true);
+
   }
 
   useEffect(() => {
@@ -102,7 +138,7 @@ export default function ShortcutHandler(props) {
   useEffect(() => {
     focusOnTrap()
   }, [current])
-
+  console.log('THIS IS PROGRES IN HANDLER', progress);
   return done ? (
     <div>
       <h1>Congrats!</h1>
@@ -111,9 +147,9 @@ export default function ShortcutHandler(props) {
   ) : (
     <HotKeys keyMap={keyMap} handlers={handlers} allowChanges={true}>
       <FocusTrap ref={ref} tabIndex={0}>
-        <ShortcutView {...currentShortcut} />
+        <ShortcutView {...currentShortcut} progress={progress} />
       </FocusTrap>
-      <Hint><span><button onClick={onHint}>HINT</button> {hint ? currentShortcut.keystroke : null} </span></Hint>
+      <Hint><span><button onClick={handleHint}>HINT</button> {hint ? currentShortcut.keystroke : null} </span></Hint>
     </HotKeys>
   )
 }
