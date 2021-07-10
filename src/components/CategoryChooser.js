@@ -31,6 +31,7 @@ export default function CategoryChooser(props) {
 
   return (
     <div>
+      <p>INSERT INSTRUCTIONS HERE</p>
       {categories.map(c => (
         <CategoryButton key={c} onClick={() => onChooseCategory(c)}>{c}</CategoryButton>
       ))}
