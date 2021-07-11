@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
 import styled, { createGlobalStyle } from 'styled-components';
-import {firebaseApp, uiConfig, firebaseAuth, db } from './utils/firebase';
+import { firebaseApp, uiConfig, firebaseAuth, db } from './utils/firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 // react routing
 import {
@@ -80,23 +80,21 @@ const App = () => {
   return (
     <Container>
       <GlobalStyle />
-      <Header />
       {
         checkedAuth && (
           !user ?
-          <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebaseAuth} /> :
-          (
-            <Router>
-              <Switch>
-                <Route exact path="/">
-                  {category ? <ShortcutHandler /> : <CategoryChooser />}
-                </Route>
-                <Route path="/new-shortcut"><ShortcutAdder /></Route>
-              </Switch>
-
-              <button onClick={onSignOut}>Sign Out</button>
-            </Router>
-          )
+            <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebaseAuth} /> :
+            (
+              <Router>
+                <Switch>
+                  <Route exact path="/">
+                    <Header />
+                    {category ? <ShortcutHandler /> : <CategoryChooser />}
+                  </Route>
+                  <Route path="/new-shortcut"><ShortcutAdder /></Route>
+                </Switch>
+              </Router>
+            )
         )
       }
     </Container>
