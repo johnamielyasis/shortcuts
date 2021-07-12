@@ -142,11 +142,15 @@ export default function ShortcutHandler(props) {
   };
 
   const ref = useRef(null);
+  const blur = useRef(null);
 
   const handleStartOver = () => {
     setDone(false);
     setHint(false);
     setCurrent(0);
+    if (blur.current) {
+      blur.current.focus();
+    }
   };
 
   const focusOnTrap = () => {
@@ -198,32 +202,38 @@ export default function ShortcutHandler(props) {
   }, [current])
   console.log('THIS IS PROGRES IN HANDLER', progress);
 
-  return done ? (
-    <FinishedScreenContainer>
-      <h1>Congrats!</h1>
-      <ButtonsContainer>
-        <SelectCategory onClick={handleStartOver}>
-          StartOver
-        </SelectCategory>
-        <SelectCategory onClick={handleChooseCategory}>
-          Select Category
-        </SelectCategory>
-      </ButtonsContainer>
-    </FinishedScreenContainer>
-  ) : (
-    <HotKeys keyMap={keyMap} handlers={handlers} allowChanges={true}>
-      <FocusTrap ref={ref} tabIndex={0}>
-        <ShortcutView {...currentShortcut} progress={progress} current={current} max={filteredShortcuts.length} />
-      </FocusTrap>
-      <ButtonsContainer>
-        <Hint style={{color: "red"}}>
-          <HintButton onClick={handleHint}>Hint</HintButton> {hint ? currentShortcut.keystroke : null}
-        </Hint>
-        <SelectCategory onClick={handleChooseCategory}>
-          Select Category
-        </SelectCategory>
-      </ButtonsContainer>
-    </HotKeys>
+  return (
+    <>
+      {done && (
+      <FinishedScreenContainer>
+        <h1>Congrats!</h1>
+        <ButtonsContainer>
+          <SelectCategory onClick={handleStartOver}>
+            StartOver
+          </SelectCategory>
+          <SelectCategory onClick={handleChooseCategory}>
+            Select Category
+          </SelectCategory>
+        </ButtonsContainer>
+      </FinishedScreenContainer>
+      )}
+      {/* prevent unmounting hotkeys, to prevent previous keystrokes from getting stuck */}
+      <div style={{overflow: 'hidden', height: done ? '0px' : 'auto'}}>
+        <HotKeys keyMap={keyMap} handlers={handlers} allowChanges={true}>
+          <FocusTrap ref={ref} tabIndex={0}>
+            <ShortcutView {...currentShortcut} progress={progress} current={current} max={filteredShortcuts.length} />
+          </FocusTrap>
+          <ButtonsContainer>
+            <Hint style={{color: "red"}}>
+              <HintButton onClick={handleHint}>Hint</HintButton> {hint ? currentShortcut.keystroke : null}
+            </Hint>
+            <SelectCategory onClick={handleChooseCategory}>
+              Select Category
+            </SelectCategory>
+          </ButtonsContainer>
+        </HotKeys>
+      </div>
+    </>
   )
 }
 

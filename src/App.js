@@ -139,8 +139,6 @@ const App = () => {
       <br />
       <p>// P.S.:
         <br />
-         // if listener is not working, clicking out and clicking back in the target area gets it to work again
-        <br />
         // Mac only for now :(
       </p>
     </Container>

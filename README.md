@@ -16,6 +16,9 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 ## Usage
 Input the proper commands that correspond to the gif action to move onto the next flashcard
 
+## Known Bugs
+1. Mac Only (for now)
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
