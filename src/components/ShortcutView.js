@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 const Image = styled.img`
   height: 350px;
+  max-width: 550px;
   width: auto;
 `
 export const ShortcutView = ({

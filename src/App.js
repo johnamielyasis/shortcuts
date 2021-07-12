@@ -3,7 +3,7 @@ import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
 import styled, { createGlobalStyle } from 'styled-components';
 import { firebaseApp, uiConfig, firebaseAuth, db } from './utils/firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-// react routing
+// todo: learn react routing, switches kind of like switch statements?
 import {
   BrowserRouter as Router,
   Switch,
@@ -11,6 +11,7 @@ import {
 } from "react-router-dom";
 
 import { theme } from './constants';
+import Banner from './components/Banner';
 import Header from './components/Header';
 import ShortcutHandler from './components/ShortcutHandler';
 import CategoryChooser from './components/CategoryChooser';
@@ -18,12 +19,20 @@ import ShortcutAdder from './components/ShortcutAdder';
 import { userIdAtom, shortcutsAtom, categoryAtom } from './atoms';
 
 const GlobalStyle = createGlobalStyle`
+a:link,
+a:visited,
+a:hover,
+a:active {
+  text-decoration: none;
+  color: #FDF8F1;
+}
+
   body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: ${theme.colors.surface};
+    background-color: #DADADA;
   }
 
   code {
@@ -31,10 +40,29 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+const BannerContainer = styled.div`
+  background-color: #72BDD3;
+  height: 600px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  box-shadow: 0px 4px 16px rgba(0,0,0,0.2);
+  z-index: 1;
+  position: relative;
+`;
+
 const Container = styled.div`
-  max-width: 1080px;
-  margin: 0 auto;
+`;
+
+const InnerContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  max-width: 600px;
+  margin: 20px auto;
   padding: 16px;
+  background-color: ${theme.colors.surface};
+  box-shadow: 2px 4px 16px rgba(0,0,0,0.2);
+  border-radius: 8px;
 `;
 // method for tracking if authentication status has changed
 const App = () => {
@@ -89,7 +117,18 @@ const App = () => {
                 <Switch>
                   <Route exact path="/">
                     <Header />
-                    {category ? <ShortcutHandler /> : <CategoryChooser />}
+                    {category ?
+                      null
+                      :
+                      <BannerContainer>
+                        <Banner />
+                      </BannerContainer>}
+
+                    <InnerContainer>
+
+                      {category ? <ShortcutHandler /> :
+                        <CategoryChooser />}
+                    </InnerContainer>
                   </Route>
                   <Route path="/new-shortcut"><ShortcutAdder /></Route>
                 </Switch>

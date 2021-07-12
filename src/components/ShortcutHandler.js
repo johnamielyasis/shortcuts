@@ -8,6 +8,18 @@ import { db } from '../utils/firebase';
 import { userIdAtom, shortcutsAtom, categoryAtom } from '../atoms';
 
 // places focus on relevant part where key perss listener is
+const ButtonsContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const FinishedScreenContainer = styled.div`
+  width: 100%;
+  justify-content: center;
+  padding: 100px;
+`;
+
+
 const FocusTrap = styled.div`
   display: flex;
   justify-content: center;
@@ -37,6 +49,35 @@ const FocusTrap = styled.div`
 const Hint = styled.div`
 `;
 
+const HintButton = styled.button`
+  cursor: pointer;
+  padding: 8px 15px;
+  max-height: 50px;
+  border-radius: 20px;
+  border: none;
+  background-color: #DDBD9A;
+  color: white;
+  font-weight: bold;
+  &:hover {
+    background-color: #F7E8D0;
+    color: #06487D;
+  }`;
+
+const SelectCategory = styled.button`
+  cursor: pointer;
+  padding: 8px 15px;
+  max-height: 50px;
+  border-radius: 20px;
+  border: none;
+  background-color: #DDBD9A;
+  color: white;
+  font-weight: bold;
+  &:hover {
+    background-color: #F7E8D0;
+    color: #06487D;
+  }
+`;
+
 export default function ShortcutHandler(props) {
   const [current, setCurrent] = useState(0);
   const [done, setDone] = useState(false);
@@ -55,6 +96,7 @@ export default function ShortcutHandler(props) {
     stuff = obj ? Object.entries(obj) : [];
 
   });
+
   const handleSuccess = (e) => {
     console.log('this is stuff', stuff)
     // progress recording to db
@@ -129,6 +171,11 @@ export default function ShortcutHandler(props) {
 
   }
 
+  const handleChooseCategory = () => {
+    window.location.reload();
+    // alternatively just clear the category atom? Hacky solution for now
+  }
+
   useEffect(() => {
     if (!uid) return;
     const userDataRef = db.ref("user_data").child(uid).child('shortcut_progress');
@@ -151,16 +198,30 @@ export default function ShortcutHandler(props) {
   console.log('THIS IS PROGRES IN HANDLER', progress);
 
   return done ? (
-    <div>
+    <FinishedScreenContainer>
       <h1>Congrats!</h1>
-      <button onClick={handleStartOver}>StartOver</button>
-    </div>
+      <ButtonsContainer>
+        <SelectCategory onClick={handleStartOver}>
+          StartOver
+        </SelectCategory>
+        <SelectCategory onClick={handleChooseCategory}>
+          Select Category
+        </SelectCategory>
+      </ButtonsContainer>
+    </FinishedScreenContainer>
   ) : (
     <HotKeys keyMap={keyMap} handlers={handlers} allowChanges={true}>
       <FocusTrap ref={ref} tabIndex={0}>
         <ShortcutView {...currentShortcut} progress={progress} />
       </FocusTrap>
-      <Hint><span><button onClick={handleHint}>HINT</button> {hint ? currentShortcut.keystroke : null} </span></Hint>
+      <ButtonsContainer>
+        <Hint>
+          <HintButton onClick={handleHint}>Hint</HintButton> {hint ? currentShortcut.keystroke : null}
+        </Hint>
+        <SelectCategory onClick={handleChooseCategory}>
+          Select Category
+        </SelectCategory>
+      </ButtonsContainer>
     </HotKeys>
   )
 }

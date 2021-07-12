@@ -7,12 +7,28 @@ import styled from 'styled-components';
   useRecoilValue    = (atom) => value             // only returns value ONLY
   useSetRecoilState = (atom) => setterFn          // only returns setterFn ONLY
 */
+const CategoryButtonContainer = styled.div`
+display: flex;
+justify-content: space-between;
+`;
 const CategoryButton = styled.button`
-  padding: 16px;
-  margin-right: 16px;
-  padding: 8px;
+  cursor: pointer;
+  padding: 8px 15px;
+  max-height: 50px;
+  border-radius: 20px;
+  border: none;
+  background-color: #DDBD9A;
+  color: white;
+  font-weight: bold;
+  &:hover {
+    background-color: #F7E8D0;
+    color: #06487D;
+  }
 `;
 
+const Instructions = styled.h2`
+
+`;
 export default function CategoryChooser(props) {
   const shortcuts = useRecoilValue(shortcutsAtom);
   const setCategory = useSetRecoilState(categoryAtom);
@@ -31,10 +47,14 @@ export default function CategoryChooser(props) {
 
   return (
     <div>
-      <p>INSERT INSTRUCTIONS HERE</p>
-      {categories.map(c => (
-        <CategoryButton key={c} onClick={() => onChooseCategory(c)}>{c}</CategoryButton>
-      ))}
+      <Instructions>
+        <h4>Select Type of Shortcuts</h4>
+      </Instructions>
+      <CategoryButtonContainer>
+        {categories.map(c => (
+          <CategoryButton key={c} onClick={() => onChooseCategory(c)}>{c}</CategoryButton>
+        ))}
+      </CategoryButtonContainer>
     </div>
   )
 }
