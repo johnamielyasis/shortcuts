@@ -127,6 +127,7 @@ const App = () => {
                       {category ? <ShortcutHandler /> :
                         <CategoryChooser />}
                     </InnerContainer>
+
                   </Route>
                   <Route path="/new-shortcut"><ShortcutAdder /></Route>
                 </Switch>
@@ -134,6 +135,14 @@ const App = () => {
             )
         )
       }
+      <br />
+      <br />
+      <p>// P.S.:
+        <br />
+         // if listener is not working, clicking out and clicking back in the target area gets it to work again
+        <br />
+        // Mac only for now :(
+      </p>
     </Container>
   );
 };

@@ -21,11 +21,11 @@ export const ShortcutView = ({
 
   return (
     <div>
-      <h3 style={{fontFamily: 'Courier New', fontSize: 25}}>{name}</h3>
-      <p>{description}</p>
+      <h3 style={{fontFamily: 'Courier New', fontSize: 25, color: `#06487D`}}>{name}</h3>
+      <p style={{color: `#06487D`}}>{description}</p>
       <Image src={image} alt={description} />
-      <p>Progress: {current + 1} / {max}</p>
-      <p>Learn Level: {progress}</p>
+      <p style={{color: `#06487D`}}>Progress: {current + 1} / {max}</p>
+      <p style={{color: `#06487D`}}>Learn Level: {progress}</p>
     </div>
   )
 }

@@ -28,7 +28,7 @@ const CategoryButton = styled.button`
 `;
 
 const Instructions = styled.h2`
-
+  color: #06487D;
 `;
 export default function CategoryChooser(props) {
   const shortcuts = useRecoilValue(shortcutsAtom);
@@ -49,7 +49,7 @@ export default function CategoryChooser(props) {
   return (
     <Container>
       <Instructions>
-        Select Type of Shortcuts
+        Select Type And Start Pressing Buttons!
       </Instructions>
       <CategoryButtonContainer>
         {categories.map(c => (
