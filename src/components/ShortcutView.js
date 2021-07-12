@@ -12,16 +12,19 @@ export const ShortcutView = ({
   description,
   image,
   keystroke,
-  progress
+  progress,
+  current,
+  max
 }) => {
-  console.log('____PROGRESS IN RIGHT PLACE WTF', progress);
+  console.log('____PROGRESS IN RIGHT PLACE WTF', current);
 
 
   return (
     <div>
-      <h3>Shortcut: {name}</h3>
+      <h3 style={{fontFamily: 'Courier New', fontSize: 25}}>{name}</h3>
       <p>{description}</p>
       <Image src={image} alt={description} />
+      <p>Progress: {current + 1} / {max}</p>
       <p>Learn Level: {progress}</p>
     </div>
   )

@@ -7,6 +7,7 @@ import styled from 'styled-components';
   useRecoilValue    = (atom) => value             // only returns value ONLY
   useSetRecoilState = (atom) => setterFn          // only returns setterFn ONLY
 */
+const Container = styled.div``;
 const CategoryButtonContainer = styled.div`
 display: flex;
 justify-content: space-between;
@@ -46,15 +47,15 @@ export default function CategoryChooser(props) {
   };
 
   return (
-    <div>
+    <Container>
       <Instructions>
-        <h4>Select Type of Shortcuts</h4>
+        Select Type of Shortcuts
       </Instructions>
       <CategoryButtonContainer>
         {categories.map(c => (
           <CategoryButton key={c} onClick={() => onChooseCategory(c)}>{c}</CategoryButton>
         ))}
       </CategoryButtonContainer>
-    </div>
+    </Container>
   )
 }

@@ -123,9 +123,7 @@ const App = () => {
                       <BannerContainer>
                         <Banner />
                       </BannerContainer>}
-
                     <InnerContainer>
-
                       {category ? <ShortcutHandler /> :
                         <CategoryChooser />}
                     </InnerContainer>

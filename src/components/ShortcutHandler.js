@@ -26,6 +26,7 @@ const FocusTrap = styled.div`
   align-items: center;
   outline: none;
   position: relative;
+  margin: 10px;
   &:not(:focus) {
     &:after {
       content: 'Click to Continue';
@@ -89,7 +90,7 @@ export default function ShortcutHandler(props) {
   const filteredShortcuts = shortcuts.filter(s => s.category === category);
   const currentShortcut = filteredShortcuts[current];
 
-  const progressRef = db.ref("user_data").child(uid).child('shortcut_progress');
+  const progressRef = db.ref(`user_data`).child(uid).child(`shortcut_progress`);
   let obj, stuff
   progressRef.on("value", (snapshot) => {
     obj = snapshot ? snapshot.val() : {};
@@ -212,10 +213,10 @@ export default function ShortcutHandler(props) {
   ) : (
     <HotKeys keyMap={keyMap} handlers={handlers} allowChanges={true}>
       <FocusTrap ref={ref} tabIndex={0}>
-        <ShortcutView {...currentShortcut} progress={progress} />
+        <ShortcutView {...currentShortcut} progress={progress} current={current} max={filteredShortcuts.length} />
       </FocusTrap>
       <ButtonsContainer>
-        <Hint>
+        <Hint style={{color: "red"}}>
           <HintButton onClick={handleHint}>Hint</HintButton> {hint ? currentShortcut.keystroke : null}
         </Hint>
         <SelectCategory onClick={handleChooseCategory}>
