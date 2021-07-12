@@ -192,6 +192,8 @@ export default function ShortcutHandler(props) {
           setProgress(id[1].value);
           console.log('whatsinhere', progress)
           break;
+        } else {
+          setProgress(0);
         }
       }
     });
