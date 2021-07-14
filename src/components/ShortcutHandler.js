@@ -99,7 +99,6 @@ export default function ShortcutHandler(props) {
   });
 
   const handleSuccess = (e) => {
-    console.log('this is stuff', stuff)
     // progress recording to db
     // in retrospect could just reduce/filter here to stop repeating having to loop but lazy
     let foundIt = false;
@@ -190,7 +189,6 @@ export default function ShortcutHandler(props) {
       for (let id of stuff) {
         if (id[1].shortcut_id === currentShortcut.id) {
           setProgress(id[1].value);
-          console.log('whatsinhere', progress)
           break;
         } else {
           setProgress(0);
@@ -202,7 +200,6 @@ export default function ShortcutHandler(props) {
   useEffect(() => {
     focusOnTrap()
   }, [current])
-  console.log('THIS IS PROGRES IN HANDLER', progress);
 
   return (
     <>

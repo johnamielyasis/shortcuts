@@ -15,6 +15,7 @@ import Banner from './components/Banner';
 import Header from './components/Header';
 import ShortcutHandler from './components/ShortcutHandler';
 import CategoryChooser from './components/CategoryChooser';
+import Footer from './components/Footer';
 import ShortcutAdder from './components/ShortcutAdder';
 import { userIdAtom, shortcutsAtom, categoryAtom } from './atoms';
 
@@ -58,7 +59,7 @@ const InnerContainer = styled.div`
   display: flex;
   justify-content: center;
   max-width: 600px;
-  margin: 20px auto;
+  margin: 32px auto;
   padding: 16px;
   background-color: ${theme.colors.surface};
   box-shadow: 2px 4px 16px rgba(0,0,0,0.2);
@@ -127,7 +128,6 @@ const App = () => {
                       {category ? <ShortcutHandler /> :
                         <CategoryChooser />}
                     </InnerContainer>
-
                   </Route>
                   <Route path="/new-shortcut"><ShortcutAdder /></Route>
                 </Switch>
@@ -135,12 +135,11 @@ const App = () => {
             )
         )
       }
-      <br />
-      <br />
       <p>// P.S.:
         <br />
         // Mac only for now :(
       </p>
+      <Footer />
     </Container>
   );
 };

@@ -5,6 +5,7 @@ export const theme = {
     primary: '#23A7F2',
     primaryLight: '#0086D1',
     surface: '#F5F5F5',
-    surfaceLight: '#2C2C32'
+    surfaceLight: '#2C2C32',
+    screenBlue: '#06487D'
   }
 }
