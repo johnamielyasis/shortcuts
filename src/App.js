@@ -124,6 +124,7 @@ const App = () => {
                       <BannerContainer>
                         <Banner />
                       </BannerContainer>}
+                      <a href="https://www.twitch.tv/chrispak?no-reload=true" style={{ color: `#DADADA` }}>subscribeToChris</a>
                     <InnerContainer>
                       {category ? <ShortcutHandler /> :
                         <CategoryChooser />}
@@ -135,10 +136,8 @@ const App = () => {
             )
         )
       }
-      <p>// P.S.:
-        <br />
-        // Mac only for now :(
-      </p>
+
+      <p>// P.S.: Mac only for now :(</p>
       <Footer />
     </Container>
   );

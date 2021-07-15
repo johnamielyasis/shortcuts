@@ -49,7 +49,7 @@ export default function CategoryChooser(props) {
   return (
     <Container>
       <Instructions>
-        Select Flashcards And Start Pressing Buttons!
+        Select Flashcard Set And Start Pressing Buttons!
       </Instructions>
       <CategoryButtonContainer>
         {categories.map(c => (
