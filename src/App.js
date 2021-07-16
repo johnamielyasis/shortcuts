@@ -136,7 +136,6 @@ const App = () => {
             )
         )
       }
-
       <p>// P.S.: Mac only for now :(</p>
       <Footer />
     </Container>
